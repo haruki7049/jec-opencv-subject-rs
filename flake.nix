@@ -39,21 +39,29 @@
           craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
           overlays = [ inputs.rust-overlay.overlays.default ];
           src = craneLib.cleanCargoSource ./.;
+          LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+          nativeBuildInputs = [
+            pkgs.pkg-config
+          ];
+          buildInputs = [
+            pkgs.opencv
+            pkgs.libclang
+          ];
           cargoArtifacts = craneLib.buildDepsOnly {
-            inherit src;
+            inherit src nativeBuildInputs buildInputs LD_LIBRARY_PATH;
           };
           jec-subject = craneLib.buildPackage {
-            inherit src cargoArtifacts;
+            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
             strictDeps = true;
 
             doCheck = true;
           };
           cargo-clippy = craneLib.cargoClippy {
-            inherit src cargoArtifacts;
+            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
             cargoClippyExtraArgs = "--verbose -- --deny warning";
           };
           cargo-doc = craneLib.cargoDoc {
-            inherit src cargoArtifacts;
+            inherit src cargoArtifacts nativeBuildInputs buildInputs LD_LIBRARY_PATH;
           };
         in
         {
@@ -93,14 +101,19 @@
               ;
           };
 
-          devShells.default = pkgs.mkShell {
+          devShells.default = pkgs.mkShell rec {
             packages = [
-              # Rust
               rust
-
-              # Nix
+              pkgs.pkg-config
               pkgs.nil
             ];
+
+            buildInputs = [
+              pkgs.opencv
+              pkgs.libclang.lib
+            ];
+
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
             shellHook = ''
               export PS1="\n[nix-shell:\w]$ "
