@@ -34,10 +34,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Import cascade file
     let mut cascade: CascadeClassifier = objdetect::CascadeClassifier::new(&args.cascade)?;
 
+    let mut rect = Vector::<Rect>::new();
+
     // detect_multi_scale
     cascade.detect_multi_scale(
         &image,
-        &mut Vector::<Rect>::new(),
+        &mut rect,
         1.0001,
         20,
         0,
@@ -45,15 +47,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Size_::new(20, 20),
     )?;
 
-    // rectangle
-    imgproc::rectangle(
-        &mut image,
-        Rect::new(0, 0, 0, 0),
-        VecN::new(0.0, 0.0, 0.0, 0.0),
-        0,
-        0,
-        0,
-    )?;
+    println!("{:?}", rect);
+
+    for r in rect.iter() {
+        println!("{:?}", r);
+
+        // rectangle
+        imgproc::rectangle(
+            &mut image,
+            r,
+            VecN::new(0.0, 0.0, 0.0, 0.0),
+            0,
+            0,
+            0,
+        )?;
+    }
 
     // SAVING!!
     imgcodecs::imwrite(
