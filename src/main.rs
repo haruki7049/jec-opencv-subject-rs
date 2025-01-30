@@ -1,9 +1,11 @@
 use clap::Parser;
-use opencv::core::Mat;
 use opencv::core::Rect;
 use opencv::core::Size_;
 use opencv::core::Vector;
+use opencv::core::VecN;
+use opencv::core::Scalar;
 use opencv::imgcodecs;
+use opencv::imgproc;
 use opencv::objdetect;
 use opencv::objdetect::CascadeClassifier;
 use opencv::prelude::CascadeClassifierTrait;
@@ -28,14 +30,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = CLIArgs::parse();
 
     // Read the photo as gray scale
-    let image = imgcodecs::imread(&args.input, imgcodecs::ImreadModes::IMREAD_GRAYSCALE.into())?;
+    let mut image = imgcodecs::imread(&args.input, imgcodecs::ImreadModes::IMREAD_GRAYSCALE.into())?;
 
     // Import cascade file
     let mut cascade: CascadeClassifier = objdetect::CascadeClassifier::new(&args.cascade)?;
 
     // detect_multi_scale
     cascade.detect_multi_scale(
-        &Mat::default(),
+        &image,
         &mut Vector::<Rect>::new(),
         1.0001,
         20,
@@ -44,7 +46,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Size_::new(0, 0),
     )?;
 
-    println!("{:?}", cascade);
+    // rectangle
+    imgproc::rectangle(
+        &mut image,
+        Rect::new(0, 0, 0, 0),
+        VecN::new(0.0, 0.0, 0.0, 0.0),
+        0,
+        0,
+        0,
+    )?;
+
+    // SAVING!!
+    imgcodecs::imwrite(
+        &args.output,
+        &image,
+        &Vector::<i32>::new(),
+    )?;
 
     Ok(())
 }
