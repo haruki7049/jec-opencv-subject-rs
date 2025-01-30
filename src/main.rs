@@ -50,14 +50,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{:?}", rect);
 
     for r in rect.iter() {
-        println!("{:?}", r);
-
         // rectangle
         imgproc::rectangle(
             &mut image,
             r,
-            VecN::new(0.0, 0.0, 0.0, 0.0),
-            0,
+            VecN::new(255.0, 255.0, 0.0, 0.0),
+            1,
             0,
             0,
         )?;
