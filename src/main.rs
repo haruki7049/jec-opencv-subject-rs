@@ -42,7 +42,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         20,
         0,
         Size_::new(20, 20),
-        Size_::new(0, 0),
+        Size_::new(20, 20),
     )?;
 
     // rectangle
