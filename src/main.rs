@@ -3,7 +3,6 @@ use opencv::core::Rect;
 use opencv::core::Size_;
 use opencv::core::Vector;
 use opencv::core::VecN;
-use opencv::core::Scalar;
 use opencv::imgcodecs;
 use opencv::imgproc;
 use opencv::objdetect;
