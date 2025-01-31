@@ -38,13 +38,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // detect_multi_scale
     cascade.detect_multi_scale(
-        &image,
-        &mut rect,
-        1.0001,
-        20,
-        0,
-        Size_::new(20, 20),
-        Size_::new(20, 20),
+        &image, // Image
+        &mut rect, // Rectangle data
+        1.0001, // scale factor
+        20, // min neighbors
+        0, // flags
+        Size_::new(20, 20), // min size
+        Size_::new(20, 20), // max size
     )?;
 
     println!("{:?}", rect);
